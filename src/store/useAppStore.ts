@@ -18,26 +18,8 @@ export interface FoodEntry {
 export interface DayLog {
   date: string;
   entries: FoodEntry[];
-  water: number; // in ml
+  water: number;
 }
-
-interface AppState {
-  // ...
-  addWater: (date: string, amount: number) => void;
-  // ...
-}
-
-// ... inside persist set():
-      addWater: (date, amount) =>
-        set((state) => {
-          const currentDay = state.dailyLogs[date] || { date, entries: [], water: 0 };
-          return {
-            dailyLogs: {
-              ...state.dailyLogs,
-              [date]: { ...currentDay, water: Math.max(0, currentDay.water + amount) },
-            },
-          };
-        }),
 
 export interface UserProfile {
   weight: number;
@@ -56,6 +38,7 @@ interface AppState {
   updateProfile: (profile: Partial<UserProfile>) => void;
   addFoodEntry: (date: string, entry: Omit<FoodEntry, 'id' | 'timestamp'>) => void;
   removeFoodEntry: (date: string, entryId: string) => void;
+  addWater: (date: string, amount: number) => void;
   resetLogs: () => void;
 }
 
@@ -83,7 +66,7 @@ export const useAppStore = create<AppState>()(
 
       addFoodEntry: (date, entry) =>
         set((state) => {
-          const currentDay = state.dailyLogs[date] || { date, entries: [] };
+          const currentDay = state.dailyLogs[date] || { date, entries: [], water: 0 };
           const newEntry: FoodEntry = {
             ...entry,
             id: Math.random().toString(36).substring(2, 9),
@@ -111,6 +94,17 @@ export const useAppStore = create<AppState>()(
                 ...currentDay,
                 entries: currentDay.entries.filter((e) => e.id !== entryId),
               },
+            },
+          };
+        }),
+
+      addWater: (date, amount) =>
+        set((state) => {
+          const currentDay = state.dailyLogs[date] || { date, entries: [], water: 0 };
+          return {
+            dailyLogs: {
+              ...state.dailyLogs,
+              [date]: { ...currentDay, water: Math.max(0, currentDay.water + amount) },
             },
           };
         }),
