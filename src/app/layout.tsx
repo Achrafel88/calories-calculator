@@ -15,6 +15,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Calorie Tracker - Smart & Simple",
   description: "Track your calories with ease, including Moroccan food database.",
+  icons: {
+    icon: "/icon.svg",
+  },
 };
 
 export default function RootLayout({
