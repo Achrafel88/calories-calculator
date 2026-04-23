@@ -100,20 +100,38 @@ export const Dashboard = () => {
 
       {/* Calorie Card */}
       <motion.div className="bg-[#16a34a] rounded-[2.5rem] p-8 text-white shadow-xl shadow-green-200">
-          <div className="flex justify-between items-start mb-6">
-            <div className="space-y-1">
-              <div className="text-green-100 text-sm font-medium flex items-center gap-2"><Target size={14} /> Daily Goal</div>
-              <div className="text-3xl font-black">{profile.calorieTarget} <span className="text-sm font-normal text-green-100">kcal</span></div>
+          <div className="grid grid-cols-3 gap-4 mb-6">
+            <div className="text-center">
+              <div className="text-[10px] text-green-100 uppercase font-bold tracking-widest">Goal</div>
+              <div className="text-xl font-black">{profile.calorieTarget}</div>
             </div>
-            <div className="bg-white/20 p-3 rounded-2xl"><Flame size={24} /></div>
+            <div className="text-center border-l border-white/20">
+              <div className="text-[10px] text-green-100 uppercase font-bold tracking-widest">Consumed</div>
+              <div className="text-xl font-black">{consumed}</div>
+            </div>
+            <div className="text-center border-l border-white/20">
+              <div className="text-[10px] text-green-100 uppercase font-bold tracking-widest">Left</div>
+              <div className="text-xl font-black">{Math.max(0, remaining)}</div>
+            </div>
           </div>
-          <div className="h-3 bg-white/20 rounded-full overflow-hidden">
+
+          <div className="h-3 bg-white/20 rounded-full overflow-hidden mb-6">
             <motion.div initial={{ width: 0 }} animate={{ width: `${progress}%` }} className="h-full bg-white rounded-full" />
           </div>
-          <div className="flex justify-between pt-4 mt-2 border-t border-white/10">
-              <div className="text-center"><div className="text-[10px] text-green-100 uppercase font-bold">Protein</div><div className="font-bold">{totalProtein}g</div></div>
-              <div className="text-center"><div className="text-[10px] text-green-100 uppercase font-bold">Carbs</div><div className="font-bold">{totalCarbs}g</div></div>
-              <div className="text-center"><div className="text-[10px] text-green-100 uppercase font-bold">Fat</div><div className="font-bold">{totalFat}g</div></div>
+
+          <div className="flex justify-between border-t border-white/10 pt-4">
+              <div className="text-center">
+                <div className="text-[10px] text-green-100 uppercase font-bold">Protein</div>
+                <div className="font-bold text-lg">{totalProtein}g</div>
+              </div>
+              <div className="text-center">
+                <div className="text-[10px] text-green-100 uppercase font-bold">Carbs</div>
+                <div className="font-bold text-lg">{totalCarbs}g</div>
+              </div>
+              <div className="text-center">
+                <div className="text-[10px] text-green-100 uppercase font-bold">Fat</div>
+                <div className="font-bold text-lg">{totalFat}g</div>
+              </div>
           </div>
       </motion.div>
 
