@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import { Gender, ActivityLevel, Goal } from '@/lib/calculations';
 
 export interface FoodEntry {
@@ -100,6 +100,7 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: 'calorie-tracker-storage',
+      storage: createJSONStorage(() => localStorage),
     }
   )
 );
