@@ -13,11 +13,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Calorie Tracker - Smart & Simple",
-  description: "Track your calories with ease, including Moroccan food database.",
+  title: "Calorie Tracker - Smart Moroccan Food Tracker",
+  description: "The smartest calorie tracker for Moroccan food. Track Tajine, Couscous, and more with ease. Calculate your daily needs and reach your goals.",
   icons: {
     icon: "/icon.svg",
   },
+  keywords: ["Calorie Tracker", "Moroccan Food", "Fitness", "Nutrition", "Tajine", "Couscous", "Healthy Eating"],
 };
 
 export default function RootLayout({
