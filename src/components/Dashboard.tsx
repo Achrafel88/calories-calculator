@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useAppStore } from '@/store/useAppStore';
 import { format } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, Utensils, Zap, Search, Target, Flame, Droplets } from 'lucide-react';
+import { Plus, Target, Flame, Droplets, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { findFoodByName, foodDatabase } from '@/lib/foodDatabase';
 
@@ -16,7 +16,7 @@ const MEAL_TYPES = [
 ];
 
 export const Dashboard = () => {
-  const { profile, dailyLogs, addFoodEntry, removeFoodEntry, addWater } = useAppStore();
+  const { profile, dailyLogs, addFoodEntry, addWater } = useAppStore();
   const today = format(new Date(), 'yyyy-MM-dd');
   const dayLog = dailyLogs[today] || { date: today, entries: [], water: 0 };
   
@@ -98,12 +98,11 @@ export const Dashboard = () => {
         </div>
       </div>
 
-      {/* Calorie Card */}
-      <motion.div className="bg-blue-600 rounded-[2.5rem] p-8 text-white shadow-xl shadow-blue-200">
+      <motion.div className="bg-green-600 dark:bg-green-950 rounded-[2.5rem] p-8 text-white shadow-xl shadow-green-200 dark:shadow-green-950/50">
           <div className="flex justify-between items-start mb-6">
             <div className="space-y-1">
-              <div className="text-blue-100/80 text-sm font-medium flex items-center gap-2"><Target size={14} /> Daily Goal</div>
-              <div className="text-3xl font-black">{profile.calorieTarget} <span className="text-sm font-normal text-blue-100/80">kcal</span></div>
+              <div className="text-green-100 dark:text-green-300 text-sm font-medium flex items-center gap-2"><Target size={14} /> Daily Goal</div>
+              <div className="text-3xl font-black">{profile.calorieTarget} <span className="text-sm font-normal text-green-100 dark:text-green-300">kcal</span></div>
             </div>
             <div className="bg-white/20 p-3 rounded-2xl"><Flame size={24} /></div>
           </div>
@@ -111,58 +110,53 @@ export const Dashboard = () => {
             <motion.div initial={{ width: 0 }} animate={{ width: `${progress}%` }} className="h-full bg-white rounded-full" />
           </div>
           <div className="flex justify-between pt-4 mt-2 border-t border-white/10">
-              <div className="text-center"><div className="text-[10px] text-blue-100/60 uppercase font-bold">Protein</div><div className="font-bold">{totalProtein}g</div></div>
-              <div className="text-center"><div className="text-[10px] text-blue-100/60 uppercase font-bold">Carbs</div><div className="font-bold">{totalCarbs}g</div></div>
-              <div className="text-center"><div className="text-[10px] text-blue-100/60 uppercase font-bold">Fat</div><div className="font-bold">{totalFat}g</div></div>
+              <div className="text-center"><div className="text-[10px] text-green-100 dark:text-green-300 uppercase font-bold">Protein</div><div className="font-bold">{totalProtein}g</div></div>
+              <div className="text-center"><div className="text-[10px] text-green-100 dark:text-green-300 uppercase font-bold">Carbs</div><div className="font-bold">{totalCarbs}g</div></div>
+              <div className="text-center"><div className="text-[10px] text-green-100 dark:text-green-300 uppercase font-bold">Fat</div><div className="font-bold">{totalFat}g</div></div>
           </div>
       </motion.div>
 
-      {/* Water Tracker */}
-      <div className="bg-blue-500 rounded-[2.5rem] p-6 text-white flex justify-between items-center">
+      <div className="bg-green-500 dark:bg-green-800 rounded-[2.5rem] p-6 text-white flex justify-between items-center shadow-lg">
          <div className="flex items-center gap-3">
            <div className="bg-white/20 p-2 rounded-xl"><Droplets size={20} /></div>
            <div><div className="text-[10px] uppercase font-bold">Water</div><div className="text-xl font-black">{water} ml</div></div>
          </div>
          <div className="flex gap-2">
-           <button onClick={() => addWater(today, 250)} className="bg-white/20 px-4 py-2 rounded-xl font-bold">+250</button>
-           <button onClick={() => addWater(today, -250)} className="bg-white/10 px-4 py-2 rounded-xl font-bold">-</button>
+           <button onClick={() => addWater(today, 250)} className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-xl font-bold transition-all">+250</button>
+           <button onClick={() => addWater(today, -250)} className="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-xl font-bold transition-all">-</button>
          </div>
       </div>
       
-      {/* Smart Suggestion */}
       {remaining > 0 && (
-        <div className="bg-white p-5 rounded-3xl border border-blue-50 flex items-start gap-4 shadow-sm">
-          <div className="bg-blue-100 p-3 rounded-2xl text-blue-600"><Zap size={20} /></div>
+        <div className="bg-white dark:bg-gray-800 p-5 rounded-3xl border border-green-50 dark:border-green-900 flex items-start gap-4 shadow-sm">
+          <div className="bg-green-100 dark:bg-green-900 p-3 rounded-2xl text-green-600"><Zap size={20} /></div>
           <div>
-            <h4 className="font-bold text-gray-800 text-sm">Smart Tip</h4>
-            <p className="text-gray-500 text-xs mt-1">You have {remaining} kcal left. {remaining > 500 ? "Try a healthy Tajine!" : "Maybe some fruit?"}</p>
+            <h4 className="font-bold dark:text-white text-sm">Smart Tip</h4>
+            <p className="text-gray-500 dark:text-gray-400 text-xs mt-1">You have {remaining} kcal left.</p>
           </div>
         </div>
       )}
 
-      {/* Meal Sections */}
       <div className="grid grid-cols-1 gap-4">
-          {MEAL_TYPES.map((meal) => {
-            const entries = dayLog.entries.filter(e => e.mealType === meal.id);
-            return (
-              <div key={meal.id} className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex justify-between items-center">
-                 <div className="flex items-center gap-3"><span className="text-2xl">{meal.icon}</span><span className="font-bold">{meal.label}</span></div>
-                 <button onClick={() => { setMealType(meal.id as any); setIsAddingFood(true); }} className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center"><Plus size={18} /></button>
+          {MEAL_TYPES.map((meal) => (
+              <div key={meal.id} className="bg-white dark:bg-gray-800 p-5 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm flex justify-between items-center">
+                 <div className="flex items-center gap-3"><span className="text-2xl">{meal.icon}</span><span className="font-bold dark:text-white">{meal.label}</span></div>
+                 <button onClick={() => { setMealType(meal.id as any); setIsAddingFood(true); }} className="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center"><Plus size={18} /></button>
               </div>
-            )
-          })}
+          ))}
       </div>
       
-      {/* Add Food Modal */}
       <AnimatePresence>
         {isAddingFood && (
           <div className="fixed inset-0 z-50 flex items-end justify-center p-4">
-             <div className="absolute inset-0 bg-black/40" onClick={() => setIsAddingFood(false)} />
-             <div className="relative bg-white w-full max-w-md rounded-[2.5rem] p-8">
-               <input autoFocus value={foodInput} onChange={(e) => handleInputChange(e.target.value)} className="w-full p-4 bg-gray-50 rounded-2xl" placeholder="Search food..." />
-               {suggestions.map(s => <button key={s.id} onClick={() => selectSuggestion(s)} className="w-full text-left p-3 border-b">{s.name}</button>)}
-               <button onClick={handleAddFood} className="w-full mt-4 p-4 bg-blue-600 text-white rounded-2xl font-bold">Add Food</button>
-             </div>
+             <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setIsAddingFood(false)} />
+             <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} className="relative bg-white dark:bg-gray-900 w-full max-w-md rounded-[2.5rem] p-8 shadow-2xl">
+               <input autoFocus value={foodInput} onChange={(e) => handleInputChange(e.target.value)} className="w-full p-4 bg-green-50 dark:bg-green-900/30 rounded-2xl outline-none focus:ring-2 focus:ring-green-500" placeholder="Search food..." />
+               <div className="max-h-40 overflow-y-auto mt-2">
+                 {suggestions.map(s => <button key={s.id} onClick={() => selectSuggestion(s)} className="w-full text-left p-3 border-b border-gray-100 dark:border-gray-800 hover:bg-green-50">{s.name}</button>)}
+               </div>
+               <button onClick={handleAddFood} className="w-full mt-4 p-4 bg-green-600 text-white rounded-2xl font-bold hover:bg-green-700 transition-all">Add Food</button>
+             </motion.div>
           </div>
         )}
       </AnimatePresence>
