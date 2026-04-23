@@ -16,9 +16,28 @@ export interface FoodEntry {
 }
 
 export interface DayLog {
-  date: string; // YYYY-MM-DD
+  date: string;
   entries: FoodEntry[];
+  water: number; // in ml
 }
+
+interface AppState {
+  // ...
+  addWater: (date: string, amount: number) => void;
+  // ...
+}
+
+// ... inside persist set():
+      addWater: (date, amount) =>
+        set((state) => {
+          const currentDay = state.dailyLogs[date] || { date, entries: [], water: 0 };
+          return {
+            dailyLogs: {
+              ...state.dailyLogs,
+              [date]: { ...currentDay, water: Math.max(0, currentDay.water + amount) },
+            },
+          };
+        }),
 
 export interface UserProfile {
   weight: number;
