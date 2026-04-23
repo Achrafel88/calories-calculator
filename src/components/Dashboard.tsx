@@ -4,8 +4,7 @@ import React, { useState } from 'react';
 import { useAppStore } from '@/store/useAppStore';
 import { format } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Target, Flame, Droplets, Zap } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Plus, Target, Flame, Droplets, Zap, Trash2 } from 'lucide-react';
 import { findFoodByName, foodDatabase } from '@/lib/foodDatabase';
 
 const MEAL_TYPES = [
@@ -114,24 +113,13 @@ export const Dashboard = () => {
               <div className="text-xl font-black">{Math.max(0, remaining)}</div>
             </div>
           </div>
-
           <div className="h-3 bg-white/20 rounded-full overflow-hidden mb-6">
             <motion.div initial={{ width: 0 }} animate={{ width: `${progress}%` }} className="h-full bg-white rounded-full" />
           </div>
-
           <div className="flex justify-between border-t border-white/10 pt-4">
-              <div className="text-center">
-                <div className="text-[10px] text-green-100 uppercase font-bold">Protein</div>
-                <div className="font-bold text-lg">{totalProtein}g</div>
-              </div>
-              <div className="text-center">
-                <div className="text-[10px] text-green-100 uppercase font-bold">Carbs</div>
-                <div className="font-bold text-lg">{totalCarbs}g</div>
-              </div>
-              <div className="text-center">
-                <div className="text-[10px] text-green-100 uppercase font-bold">Fat</div>
-                <div className="font-bold text-lg">{totalFat}g</div>
-              </div>
+              <div className="text-center"><div className="text-[10px] text-green-100 uppercase font-bold">Protein</div><div className="font-bold text-lg">{totalProtein}g</div></div>
+              <div className="text-center"><div className="text-[10px] text-green-100 uppercase font-bold">Carbs</div><div className="font-bold text-lg">{totalCarbs}g</div></div>
+              <div className="text-center"><div className="text-[10px] text-green-100 uppercase font-bold">Fat</div><div className="font-bold text-lg">{totalFat}g</div></div>
           </div>
       </motion.div>
 
@@ -147,27 +135,31 @@ export const Dashboard = () => {
          </div>
       </div>
       
-      {/* Smart Suggestion */}
-      {remaining > 0 && (
-        <div className="bg-white p-5 rounded-3xl border border-green-50 flex items-start gap-4 shadow-sm">
-          <div className="bg-green-100 p-3 rounded-2xl text-green-600"><Zap size={20} /></div>
-          <div>
-            <h4 className="font-bold text-gray-800 text-sm">Smart Tip</h4>
-            <p className="text-gray-500 text-xs mt-1">
-              You have <span className="text-[#16a34a] font-black">{remaining} kcal</span> left.
-            </p>
-          </div>
-        </div>
-      )}
-
       {/* Meal Sections */}
-      <div className="grid grid-cols-1 gap-4">
-          {MEAL_TYPES.map((meal) => (
-              <div key={meal.id} className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex justify-between items-center">
-                 <div className="flex items-center gap-3"><span className="text-2xl">{meal.icon}</span><span className="font-bold">{meal.label}</span></div>
-                 <button onClick={() => { setMealType(meal.id as any); setIsAddingFood(true); }} className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center"><Plus size={18} /></button>
+      <div className="space-y-4">
+          {MEAL_TYPES.map((meal) => {
+             const entries = dayLog.entries.filter(e => e.mealType === meal.id);
+             return (
+              <div key={meal.id}>
+                <div className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex justify-between items-center">
+                   <div className="flex items-center gap-3"><span className="text-2xl">{meal.icon}</span><span className="font-bold">{meal.label}</span></div>
+                   <button onClick={() => { setMealType(meal.id as any); setIsAddingFood(true); }} className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center"><Plus size={18} /></button>
+                </div>
+                {/* List of foods added */}
+                <div className="mt-2 space-y-2 px-2">
+                  {entries.map(e => (
+                    <motion.div initial={{opacity:0}} animate={{opacity:1}} key={e.id} className="bg-white p-3 rounded-2xl flex justify-between items-center border border-gray-50 shadow-sm">
+                        <div>
+                          <div className="font-bold text-sm">{e.name}</div>
+                          <div className="text-[10px] text-gray-400">{Math.round(e.calories)} kcal • {e.protein}P • {e.carbs}C • {e.fat}F</div>
+                        </div>
+                        <button onClick={() => removeFoodEntry(today, e.id)} className="text-red-400 hover:text-red-600"><Trash2 size={18} /></button>
+                    </motion.div>
+                  ))}
+                </div>
               </div>
-          ))}
+            )
+          })}
       </div>
       
       {/* Add Food Modal */}
