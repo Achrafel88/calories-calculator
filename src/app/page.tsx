@@ -14,13 +14,28 @@ export default function Home() {
   const { profile, resetLogs, updateProfile } = useAppStore();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [mounted, setMounted] = useState(false);
+  const [hasHydrated, setHasHydrated] = useState(false);
 
-  // Handle hydration
+  // Handle hydration timing
   useEffect(() => {
+    // Check if store is already hydrated
+    const checkHydration = () => {
+      if (useAppStore.persist.hasHydrated()) {
+        setHasHydrated(true);
+      }
+    };
+
+    const unsub = useAppStore.persist.onFinishHydration(() => {
+      setHasHydrated(true);
+    });
+
+    checkHydration();
     setMounted(true);
+    
+    return () => unsub();
   }, []);
 
-  if (!mounted) return null;
+  if (!mounted || !hasHydrated) return null;
 
   if (!profile.isOnboarded) {
     return <Onboarding />;
